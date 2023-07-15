@@ -427,7 +427,7 @@ echo "Deblobbing...";
 	#https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/location/
 	blobs=$blobs"|libalarmservice_jni.so|libasn1cper.so|libasn1crt.so|libasn1crtx.so|libgdtap.so|libloc_ext.so|libloc_xtra.so|liblowi_wifihal_nl.so|liblowi_wifihal.so|libquipc_os_api.so|libquipc_ulp_adapter.so|libxt_native.so|libxtwifi_ulp_adaptor.so|libxtwifi_zpp_adaptor.so";
 	#blobs=$blobs"|libulp2.so|libxtadapter.so|libgeofence.so|liblbs_core.so|libdataitems.so|libdrplugin_client.so|libDRPlugin.so|libevent_observer.so|liblocationservice_glue.so|liblocationservice.so|liblowi_client.so";
-	blobs=$blobs"|cacert_location.pem|com.qti.location.sdk.xml|com.qualcomm.location.xml|izat.conf|izat.xt.srv.xml|lowi.conf|xtra_root_cert.pem|xtwifi.conf";
+	blobs=$blobs"|cacert_location.pem|com.qti.location.sdk.xml|izat.conf|izat.xt.srv.xml|lowi.conf|xtra_root_cert.pem|xtwifi.conf";
 	blobs=$blobs"|com.qti.location.sdk.jar|izat.xt.srv.jar";
 	blobs=$blobs"|com.qualcomm.location.apk|com.qualcomm.services.location.apk|xtra_t_app.apk|CACertService.apk";
 	blobs=$blobs"|gpsone_daemon|izat.xt.srv|location-mq|loc_launcher|lowi-server|slim_ap_daemon|slim_daemon|xtwifi-client|xtwifi-inet-agent|xtra-daemon|garden_app";
