@@ -410,6 +410,8 @@ cp -f "$DOS_PATCHES_COMMON/apns-conf.xml" prebuilt/common/etc/apns-conf.xml; #Up
 awk -i inplace '!/Eleven/' config/common_mobile.mk; #Remove Music Player
 awk -i inplace '!/Exchange2/' config/common_mobile.mk; #Remove Email
 cp -f "$DOS_PATCHES_COMMON/config_webview_packages.xml" overlay/common/frameworks/base/core/res/res/xml/config_webview_packages.xml; #Change allowed WebView providers
+awk -i inplace '!/com.android.vending/' overlay/common/frameworks/base/core/res/res/values/vendor_required_apps*.xml; #Remove unwanted apps
+awk -i inplace '!/com.google.android/' overlay/common/frameworks/base/core/res/res/values/vendor_required_apps*.xml;
 fi;
 
 if enter "vendor/divested"; then
@@ -422,11 +424,6 @@ fi;
 #
 #START OF DEVICE CHANGES
 #
-if enterAndClear "device/lge/hammerhead"; then
-git am $DOS_PATCHES/android_device_lge_hammerhead/*.patch; #hh-p-sepolicy
-echo "SELINUX_IGNORE_NEVERALLOWS := true" >> BoardConfig.mk; #qcom-legacy sepolicy
-fi;
-
 if enterAndClear "device/wileyfox/kipper"; then
 compressRamdisks;
 fi;
@@ -455,7 +452,6 @@ cd "$DOS_BUILD_BASE";
 #Tweaks for <2GB RAM devices
 #none yet
 #Tweaks for <3GB RAM devices
-#enableLowRam "device/lge/hammerhead" "hammerhead";
 #enableLowRam "device/samsung/kccat6" "kccat6";
 #Tweaks for <4GB RAM devices
 #enableLowRam "device/samsung/lentislte" "lentislte";

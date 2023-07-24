@@ -440,6 +440,8 @@ awk -i inplace '!/Eleven/' config/common_mobile.mk; #Remove Music Player
 awk -i inplace '!/Email/' config/common_mobile.mk; #Remove Email
 awk -i inplace '!/Exchange2/' config/common_mobile.mk;
 cp -f "$DOS_PATCHES_COMMON/config_webview_packages.xml" overlay/common/frameworks/base/core/res/res/xml/config_webview_packages.xml; #Change allowed WebView providers
+awk -i inplace '!/com.android.vending/' overlay/common/frameworks/base/core/res/res/values/vendor_required_apps*.xml; #Remove unwanted apps
+awk -i inplace '!/com.google.android/' overlay/common/frameworks/base/core/res/res/values/vendor_required_apps*.xml;
 fi;
 
 if enter "vendor/divested"; then
@@ -461,6 +463,10 @@ echo "allow camera system_data_root_file:dir rw_dir_perms;" >> sepolicy/vendor/c
 echo "allow camera system_data_root_file:sock_file { create unlink write setattr };" >> sepolicy/vendor/camera.te;
 echo "allow cameraserver sysfs_soc:dir r_dir_perms;" >> sepolicy/vendor/cameraserver.te;
 echo "allow cameraserver sysfs_soc:file r_file_perms;" >> sepolicy/vendor/cameraserver.te;
+fi;
+
+if enterAndClear "device/asus/debx"; then
+compressRamdisks;
 fi;
 
 if enterAndClear "device/google/marlin"; then
@@ -489,6 +495,13 @@ echo "allow hwaddrs self:capability { fowner };" >> sepolicy/hwaddrs.te;
 echo "allow hwaddrs block_device:lnk_file { open };" >> sepolicy/hwaddrs.te;
 echo "allow hwaddrs misc_block_device:blk_file { open read };" >> sepolicy/hwaddrs.te;
 sed -i '1itypeattribute wcnss_service misc_block_device_exception;' sepolicy/wcnss_service.te;
+fi;
+
+if enterAndClear "device/lge/hammerhead"; then
+awk -i inplace '!/TARGET_RELEASETOOLS_EXTENSIONS/' BoardConfig.mk; #broken releasetools
+awk -i inplace '!/PRODUCT_DISABLE_SCUDO/' device.mk; #don't disable scudo
+rm setup-makefiles.sh; #index is broken
+rm -rfv timekeep;
 fi;
 
 if enterAndClear "device/lge/mako"; then
@@ -586,6 +599,7 @@ enableLowRam "device/samsung/serranoltexx" "serranoltexx";
 enableLowRam "device/samsung/serranodsdd" "serranodsdd";
 #Tweaks for <3GB RAM devices
 enableLowRam "device/asus/flox" "flox";
+enableLowRam "device/asus/debx" "debx";
 enableLowRam "device/fairphone/FP2" "FP2";
 enableLowRam "device/htc/m8-common" "m8-common";
 enableLowRam "device/htc/m8" "m8";
@@ -596,6 +610,7 @@ enableLowRam "device/lge/d801" "d801";
 enableLowRam "device/lge/d802" "d802";
 enableLowRam "device/lge/d803" "d803";
 enableLowRam "device/lge/g2-common" "g2-common";
+enableLowRam "device/lge/hammerhead" "hammerhead";
 enableLowRam "device/lge/mako" "mako";
 enableLowRam "device/motorola/victara" "victara";
 enableLowRam "device/samsung/jf-common" "jf-common";
@@ -647,9 +662,13 @@ enableLowRam "device/samsung/msm8974-common" "msm8974-common";
 [[ -d kernel/oneplus/msm8996 ]] && sed -i "s/CONFIG_STRICT_MEMORY_RWX=y/# CONFIG_STRICT_MEMORY_RWX is not set/" kernel/oneplus/msm8996/arch/arm64/configs/lineageos_*_defconfig; #Breaks on compile
 
 sed -i 's/^YYLTYPE yylloc;/extern YYLTYPE yylloc;/' kernel/*/*/scripts/dtc/dtc-lexer.l* || true; #Fix builds with GCC 10
+sed -i 's/^extern YYLTYPE yylloc;/YYLTYPE yylloc;/' kernel/oneplus/msm8996/scripts/dtc/dtc-lexer.l* || true; #Unbreak
 rm -v kernel/*/*/drivers/staging/greybus/tools/Android.mk || true;
 awk -i inplace '!/config_wifi_batched_scan_supported/' device/*/*/overlay/frameworks/opt/net/wifi/service/res/values/config.xml &>/dev/null || true; #deprecated
 awk -i inplace '!/config_wifi_batched_scan_supported/' device/*/*/overlay/frameworks/base/core/res/res/values/config.xml &>/dev/null || true; #deprecated
+awk -i inplace '!/UpdateSetting/' vendor/lge/hammerhead/hammerhead-vendor.mk || true;
+awk -i inplace '!/SprintHiddenMenu/' vendor/lge/hammerhead/hammerhead-vendor.mk || true;
+awk -i inplace '!/OmaDmclient/' vendor/lge/hammerhead/hammerhead-vendor.mk || true;
 #
 #END OF DEVICE CHANGES
 #
