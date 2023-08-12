@@ -314,7 +314,7 @@ git apply $DOS_PATCHES_LINUX_CVES/CVE-2019-14053/3.4/0002.patch
 git apply $DOS_PATCHES_LINUX_CVES/CVE-2019-14283/3.18/0004.patch
 git apply $DOS_PATCHES_LINUX_CVES/CVE-2020-29660/3.18/0007.patch
 git apply $DOS_PATCHES_LINUX_CVES/CVE-2022-20423/3.4/0010.patch
-editKernelLocalversion "-dos.p314"
+editKernelLocalversion "-dos.p315"
 else echo "kernel_samsung_apq8084 is unavailable, not patching.";
 fi;
 cd "$DOS_BUILD_BASE"

@@ -286,11 +286,15 @@ echo "Deblobbing...";
 
 	#eUICC (Virtual SIM) [Google]
 	if [ "$DOS_DEBLOBBER_REMOVE_IMS" = true ] || [ "$DOS_DEBLOBBER_REMOVE_EUICC" = true ]; then
-		blobs=$blobs"|EuiccGoogle.apk|EuiccSupportPixel.apk|EuiccSupportPixelPermissions.apk|EuiccGoogleOverlay.apk"; #EUICC is useless without GMS
-		blobs=$blobs"|esim0.img|esim-v1.img|esim-full-v0.img|esim-a1.img|esim-a2.img";
-		blobs=$blobs"|com.google.euiccpixel.xml|com.google.euiccpixel.permissions.xml";
-		makes=$makes"|android.hardware.telephony.euicc.*|GoogleParts";
+		blobs=$blobs"|EuiccGoogle.apk|EuiccGoogleOverlay.apk"; #Google LPAD
+		makes=$makes"|GoogleParts"; #Disables apps if GMS is not available
 		#overlay=$overlay"|config_telephonyEuiccDeviceCapabilities"; #TODO handle multiple lines
+		if [ "$DOS_DEBLOBBER_REMOVE_EUICC_FULL" = true ]; then
+			blobs=$blobs"|EuiccSupportPixel.apk|EuiccSupportPixelPermissions.apk"; #Hardware support
+			blobs=$blobs"|esim0.img|esim-v1.img|esim-full-v0.img|esim-a1.img|esim-a2.img"; #Firmware
+			blobs=$blobs"|com.google.euiccpixel.xml|com.google.euiccpixel.permissions.xml"; #Permissions
+			makes=$makes"|android.hardware.telephony.euicc.*"; #Manifests
+		fi;
 	fi;
 
 	#Google Camera
@@ -727,7 +731,7 @@ deblobDevice() {
 	sed -i 's/bluetooth.emb_wp_mode=true/bluetooth.emb_wp_mode=false/' *.prop *.mk &>/dev/null || true; #Disable WiPower
 	sed -i 's/bluetooth.wipower=true/bluetooth.wipower=false/' *.prop *.mk &>/dev/null || true; #Disable WiPower
 	sed -i 's/wfd.enable=1/wfd.enable=0/' *.prop *.mk &>/dev/null || true; #Disable Wi-Fi display
-	sed -i '/vendor.camera.extensions/d' *.prop *.mk &>/dev/null || true; fi; #Disable camera extensions
+	sed -i '/vendor.camera.extensions/d' *.prop *.mk &>/dev/null || true; #Disable camera extensions
 	if [ -f system.prop ]; then
 		if ! grep -q "drm.service.enabled=false" system.prop; then echo "drm.service.enabled=false" >> system.prop; fi; #Disable DRM server
 		if [ "$DOS_DEBLOBBER_REMOVE_GRAPHICS" = true ]; then
@@ -904,6 +908,7 @@ fi;
 deblobVendors; #Deblob entire vendor directory
 rm -rf frameworks/av/drm/mediadrm/plugins/clearkey; #Remove ClearKey
 #rm -rf frameworks/av/drm/mediacas/plugins/clearkey; #XXX: breaks protobuf inclusion
+#rm -rf packages/apps/Car/DebuggingRestrictionController || true; #Remove package that depends on Play Services #XXX: breaks compile
 [[ -d vendor/samsung/nodevice ]] && rm -rf vendor/samsung/nodevice;
 #
 #END OF DEBLOBBING
